@@ -160,3 +160,7 @@ Google Group
 
 Join the Google group, rtl_433, for more information about rtl_433:
 https://groups.google.com/forum/#!forum/rtl_433
+
+Adding sqlite support
+------------
+Added some line to support sqlite database. Way to go...
