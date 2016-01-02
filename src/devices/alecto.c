@@ -130,6 +130,13 @@ static int alectov1_callback(bitbuffer_t *bitbuffer) {
 									"wind_direction", "Direction",  DATA_INT,    direction,
 							 	   	NULL);
 			    	data_acquired_handler(data);
+
+                    // ##########################################
+                    // #### Put wind into database
+		    snprintf(sqlc, sizeof(sqlc), "/usr/bin/sqlite3 /home/pi/coding/rtl_433/temperatur.sqlite 'INSERT INTO wind (datetime,windstaerke,windboee,windrichtung) VALUES (CURRENT_TIMESTAMP,%.2f,%.2f,%.2i)'",speed*0.2,gust*0.2,direction);
+                    system(sqlc);
+                    // ##########################################
+
                 }
             } else {
                 // Rain sensor
@@ -143,7 +150,12 @@ static int alectov1_callback(bitbuffer_t *bitbuffer) {
 							    "rain_total",    "Total Rain", DATA_FORMAT, "%.02f mm", DATA_DOUBLE, rain_mm,
 							    NULL);
 			    data_acquired_handler(data);
-            }
+                // ##########################################
+                // #### Put rain into database
+		snprintf(sqlc, sizeof(sqlc), "/usr/bin/sqlite3 /home/pi/coding/rtl_433/temperatur.sqlite 'INSERT INTO rain (datetime,niederschlag) VALUES (CURRENT_TIMESTAMP,%f)'",rain_mm);
+		system(sqlc);
+                // ##########################################    
+        }
         } else if (bb[2][0] == bb[3][0] && bb[3][0] == bb[4][0] && bb[4][0] == bb[5][0] &&
                 bb[5][0] == bb[6][0] && (bb[3][4] & 0xf) == 0 && (bb[5][4] & 0xf) == 0) {
             //static char * temp_states[4] = {"stable", "increasing", "decreasing", "invalid"};
