@@ -60,6 +60,7 @@ static int alectov1_callback(bitbuffer_t *bitbuffer) {
     int16_t temp;
     uint8_t humidity, csum = 0, csum2 = 0;
     int i;
+    char sqlc[512];
 
 	data_t *data;
 	char time_str[LOCAL_TIME_BUFLEN];
@@ -175,6 +176,11 @@ static int alectov1_callback(bitbuffer_t *bitbuffer) {
 							"humidity",      "Humidity",    DATA_FORMAT, "%u %%",   DATA_INT, humidity,
 							NULL);
 			data_acquired_handler(data);
+            // ##########################################
+            // #### Put temperature/humidity into database
+            snprintf(sqlc, sizeof(sqlc), "/usr/bin/sqlite3 /home/pi/coding/rtl_433/temperatur.sqlite 'INSERT INTO temperature (datetime,temperatur,feuchtigkeit) VALUES (CURRENT_TIMESTAMP,%d.%d,%d)s'",temperature_before_dec,temperature_after_dec,humidity);
+            system(sqlc);
+            // ##########################################			
         }        
         if (debug_output){
            fprintf(stdout, "Checksum      = %01x (calculated %01x)\n", bb[1][4] >> 4, csum);
